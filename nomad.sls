@@ -21,7 +21,11 @@ add nomad user:
 add nomad service:
   file.managed:
     - name: /etc/systemd/system/nomad.service
+    {% if grains['host'] == 'deb9-01' %}
     - source: salt://nomad/nomad.service
+    {% elif grains['host'] != 'deb9-01' %}
+    - source: salt://nomad/nomad-client.service
+    {% endif %}
     - user: nomad
     - group: nomad
 
