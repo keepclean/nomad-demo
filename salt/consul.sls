@@ -1,15 +1,11 @@
 {%- set version = "1.5.1" %}
-download consul binary:
-  file.managed:
-    - name: /opt/artefacts/consul_{{ version }}_linux_amd64.zip
+install consul binary:
+  archive.extracted:
+    - name: /usr/local/bin
     - source: https://releases.hashicorp.com/consul/{{ version }}/consul_{{ version }}_linux_amd64.zip
     - source_hash: https://releases.hashicorp.com/consul/{{ version }}/consul_{{ version }}_SHA256SUMS
-    - makedirs: True
-
-install consul binary:
-  archive.cmd_unzip:
-    - zip_file: /opt/artefacts/consul_{{ version }}_linux_amd64.zip
-    - dest: /usr/local/bin/
+    - user: root
+    - group: root
 
 add consul user:
   user.present:
@@ -63,8 +59,8 @@ run consul service:
     - enable: True
     - no_block: True
     - watch:
-      {% if grains['host'] == consul_servers %}
+      {% if grains['host'] in consul_servers %}
       - file: server consul config
-      {% elif grains['host'] != consul_servers %}
+      {% elif grains['host'] not in consul_servers %}
       - file: client consul config
       {% endif %}
