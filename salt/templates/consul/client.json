@@ -1,0 +1,6 @@
+{
+  "datacenter": "lhr08",
+  "data_dir": "/opt/consul",
+  "log_level": "WARN",
+  "server": false
+}
