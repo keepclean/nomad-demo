@@ -1,5 +1,5 @@
 base:
   '*':
     - common
-    #- consul
+    - consul
     #- nomad
