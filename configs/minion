@@ -1,0 +1,9 @@
+master:
+  - 10.0.0.2
+  - 10.0.0.3
+  - 10.0.0.4
+state_verbose: False
+state_output: changes
+process_count_max: 4
+log_level: warning
+startup_states: highstate

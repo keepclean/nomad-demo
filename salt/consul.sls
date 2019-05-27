@@ -1,10 +1,15 @@
-install consul binary:
+{%- set version = "1.5.1" %}
+download consul binary:
   file.managed:
-    - name: /usr/local/bin/consul
-    - source: salt://consul/consul
-    - user: root
-    - group: root
-    - mode: 755
+    - name: /opt/artefacts/consul_{{ version }}_linux_amd64.zip
+    - source: https://releases.hashicorp.com/consul/{{ version }}/consul_{{ version }}_linux_amd64.zip
+    - source_hash: https://releases.hashicorp.com/consul/{{ version }}/consul_{{ version }}_SHA256SUMS
+    - makedirs: True
+
+install consul binary:
+  archive.cmd_unzip:
+    - zip_file: /opt/artefacts/consul_{{ version }}_linux_amd64.zip
+    - dest: /usr/local/bin/
 
 add consul user:
   user.present:
