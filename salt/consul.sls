@@ -21,7 +21,7 @@ add consul user:
 add consul service:
   file.managed:
     - name: /etc/systemd/system/consul.service
-    - source: salt://consul/consul.service
+    - source: salt://templates/consul/consul.service
     - user: consul
     - group: consul
 
@@ -30,22 +30,23 @@ add consul service:
     - user: consul
     - group: consul
 
+{% set consul_servers = ('8dm1', '8dm2', '8dm3') %}
 
-{% if grains['host'] == 'deb9-01' %}
+{% if grains['host'] in  consul_servers %}
 server consul config:
   file.managed:
     - name: /etc/consul.d/server.json
-    - source: salt://consul/server.json
+    - source: salt://templates/consul/server.json
     - user: consul
     - group: consul
     - mode: 640
 {% endif %}
 
-{% if grains['host'] != 'deb9-01' %}
+{% if grains['host'] not in consul_servers %}
 client consul config:
   file.managed:
     - name: /etc/consul.d/client.json
-    - source: salt://consul/client.json
+    - source: salt://templates/consul/client.json
     - user: consul
     - group: consul
     - mode: 640
@@ -57,8 +58,8 @@ run consul service:
     - enable: True
     - no_block: True
     - watch:
-      {% if grains['host'] == 'deb9-01' %}
+      {% if grains['host'] == consul_servers %}
       - file: server consul config
-      {% elif grains['host'] != 'deb9-01' %}
+      {% elif grains['host'] != consul_servers %}
       - file: client consul config
       {% endif %}

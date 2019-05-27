@@ -12,7 +12,7 @@ ExecStart=/usr/local/bin/nomad agent -config=/etc/nomad.d/
 ExecReload=/bin/kill --signal HUP $MAINPID
 KillMode=process
 Restart=on-failure
-RestartSec=2
+RestartSec=5
 StartLimitBurst=3
 StartLimitIntervalSec=10
 LimitNOFILE=65536

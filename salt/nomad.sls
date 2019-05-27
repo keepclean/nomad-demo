@@ -18,13 +18,15 @@ add nomad user:
     - user: nomad
     - group: nomad
 
+{% from 'consul.sls' import consul_servers %}
+
 add nomad service:
   file.managed:
     - name: /etc/systemd/system/nomad.service
-    {% if grains['host'] == 'deb9-01' %}
-    - source: salt://nomad/nomad.service
-    {% elif grains['host'] != 'deb9-01' %}
-    - source: salt://nomad/nomad-client.service
+    {% if grains['host'] in consul_servers %}
+    - source: salt://templates/nomad/nomad.service
+    {% elif grains['host'] not in consul_servers %}
+    - source: salt://templates/nomad/nomad-client.service
     {% endif %}
     - user: nomad
     - group: nomad
@@ -37,23 +39,23 @@ add nomad service:
 common nomad config:
   file.managed:
     - name: /etc/nomad.d/nomad.hcl
-    - source: salt://nomad/nomad.hcl
+    - source: salt://templates/nomad/nomad.hcl
     - user: nomad
     - group: nomad
     - mode: 640
 
 
-{% if grains['host'] == 'deb9-01' %}
+{% if grains['host'] in consul_servers %}
 server nomad config:
   file.managed:
     - name: /etc/nomad.d/server.hcl
-    - source: salt://nomad/server.hcl
+    - source: salt://templates/nomad/server.hcl
     - user: nomad
     - group: nomad
     - mode: 640
 {% endif %}
 
-{% if grains['host'] != 'deb9-01' %}
+{% if grains['host'] not in consul_servers %}
 client nomad config:
   file.managed:
     - name: /etc/nomad.d/client.hcl
@@ -70,8 +72,8 @@ run nomad service:
     - no_block: True
     - watch:
       - file: common nomad config
-      {% if grains['host'] == 'deb9-01' %}
+      {% if grains['host'] in consul_servers %}
       - file: server nomad config
-      {% elif grains['host'] != 'deb9-01' %}
+      {% elif grains['host'] not in consul_servers %}
       - file: client nomad config
       {% endif %}

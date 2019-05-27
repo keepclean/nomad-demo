@@ -1,6 +1,0 @@
-{
-  "datacenter": "ru-central1-b",
-  "data_dir": "/opt/consul",
-  "log_level": "INFO",
-  "server": false
-}
