@@ -1,0 +1,11 @@
+[Unit]
+Description=simple fileserver in Go
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+Restart=on-failure
+ExecStart=/usr/local/bin/go-fileserver -p 8080 -d=/srv/file-server/
+
+[Install]
+WantedBy=multi-user.target
