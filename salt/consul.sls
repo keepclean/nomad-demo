@@ -6,6 +6,7 @@ install consul binary:
     - source_hash: https://releases.hashicorp.com/consul/{{ version }}/consul_{{ version }}_SHA256SUMS
     - user: root
     - group: root
+    - enforce_toplevel: False
 
 add consul user:
   user.present:
