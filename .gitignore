@@ -4,6 +4,8 @@
 # Unignore all with extensions
 !*.*
 !Vagrantfile
+!configs/master
+!configs/minion
 
 # Unignore all dirs
 !*/
