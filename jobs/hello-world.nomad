@@ -1,5 +1,5 @@
 job "example" {
-    datacenters = ["ru-central1-b"]
+    datacenters = ["lhr08"]
     type = "system"
     task "example" {
         driver = "exec"
@@ -9,14 +9,14 @@ job "example" {
         }
 
         artifact {
-            source = "http://deb9-01.ru-central1.internal:8080/hello-world"
+            source = "https://github.com/keepclean/nomad-demo/releases/download/0.01/hello_world_linux_amd64"
             mode = "file"
             destination = "/opt/nomad/tasks/bin/hello-world"
         }
 
         resources {
-            cpu    = 100 # 100 MHz
-            memory = 56 # 56MB
+            cpu    = 100 # MHz
+            memory = 56 # MB
             network {
                 mbits = 10
             }
