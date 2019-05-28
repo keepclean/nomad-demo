@@ -1,10 +1,12 @@
+{%- set version = "0.9.1" %}
 install nomad binary:
-  file.managed:
-    - name: /usr/local/bin/nomad
-    - source: salt://nomad/nomad
+  archive.extracted:
+    - name: /usr/local/bin/
+    - source: https://releases.hashicorp.com/nomad/{{ version }}/nomad_{{ version }}_linux_amd64.zip
+    - source_hash: https://releases.hashicorp.com/nomad/{{ version }}/nomad_{{ version }}_SHA256SUMS
     - user: root
     - group: root
-    - mode: 755
+    - enforce_toplevel: False
 
 add nomad user:
   user.present:
