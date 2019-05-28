@@ -1,4 +1,5 @@
 {
+  "bind_addr": "{{ GetPrivateInterfaces | include \"network\" \"10.0.0.0/24\" | attr \"address\"}}",
   "datacenter": "lhr08",
   "data_dir": "/opt/consul",
   "log_level": "WARN",
