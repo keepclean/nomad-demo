@@ -2,4 +2,4 @@ base:
   '*':
     - common
     - consul
-    #- nomad
+    - nomad
