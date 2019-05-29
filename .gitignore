@@ -10,3 +10,4 @@
 # Unignore all dirs
 !*/
 .vagrant/
+.DS_Store
