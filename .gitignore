@@ -6,6 +6,8 @@
 !Vagrantfile
 !configs/master
 !configs/minion
+configs/keys/*.pem
+configs/keys/*.pub
 
 # Unignore all dirs
 !*/
