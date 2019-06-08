@@ -1,9 +1,9 @@
 {
-  {% raw %}
+  {%- raw %}
   "bind_addr": "{{ GetPrivateInterfaces | exclude \"network\" \"10.0.2.0/24\" | attr \"address\"}}",
-  {% endraw %}
+  {%- endraw %}
   "bootstrap_expect": 3,
-  "datacenter": {{ pillar['datacenter'] }},
+  "datacenter": "{{ pillar['datacenter'] }}",
   "data_dir": "/opt/consul",
   "log_level": "WARN",
   "retry_join": ["10.0.0.2", "10.0.0.3", "10.0.0.4"],
