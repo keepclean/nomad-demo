@@ -44,6 +44,7 @@ consul config:
     - user: consul
     - group: consul
     - mode: 640
+    - template: jinja
 
 run consul service:
   service.running:
