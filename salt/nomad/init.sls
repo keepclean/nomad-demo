@@ -20,14 +20,15 @@ add nomad user:
     - user: nomad
     - group: nomad
 
+{% set agent = "server" %}
+{% if 'dm' not in grains['host'] %}
+  {% set agent = "client" %}
+{% endif %}
+
 add nomad service:
   file.managed:
     - name: /etc/systemd/system/nomad.service
-    {% if grains['host'] in consul_servers %}
-    - source: salt://templates/nomad/nomad.service
-    {% elif grains['host'] not in consul_servers %}
-    - source: salt://templates/nomad/nomad-client.service
-    {% endif %}
+    - source: salt://templates/nomad/nomad-{{ agent }}.service
     - user: nomad
     - group: nomad
 
@@ -44,11 +45,6 @@ common nomad config:
     - group: nomad
     - mode: 640
 
-
-{% set agent = "server" %}
-{% if 'dm' not in grains['host'] %}
-  {% set agent = "client" %}
-{% endif %}
 
 {{ agent }} nomad config:
   file.managed:
