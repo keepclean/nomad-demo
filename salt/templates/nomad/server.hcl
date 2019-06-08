@@ -1,4 +1,4 @@
-bind_addr = "{{ GetPrivateInterfaces | include \"network\" \"10.0.0.0/24\" | attr \"address\"}}"
+bind_addr = "{{ GetPrivateInterfaces | exclude \"network\" \"10.0.2.0/24\" | attr \"address\"}}"
 
 server {
     enabled = true

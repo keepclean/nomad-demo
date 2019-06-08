@@ -20,8 +20,6 @@ add nomad user:
     - user: nomad
     - group: nomad
 
-{% from 'consul.sls' import consul_servers %}
-
 add nomad service:
   file.managed:
     - name: /etc/systemd/system/nomad.service
@@ -47,25 +45,18 @@ common nomad config:
     - mode: 640
 
 
-{% if grains['host'] in consul_servers %}
-server nomad config:
-  file.managed:
-    - name: /etc/nomad.d/server.hcl
-    - source: salt://templates/nomad/server.hcl
-    - user: nomad
-    - group: nomad
-    - mode: 640
+{% set agent = "server" %}
+{% if 'dm' not in grains['host'] %}
+  {% set agent = "client" %}
 {% endif %}
 
-{% if grains['host'] not in consul_servers %}
-client nomad config:
+{{ agent }} nomad config:
   file.managed:
-    - name: /etc/nomad.d/client.hcl
-    - source: salt://nomad/client.hcl
+    - name: /etc/nomad.d/{{ agent }}.hcl
+    - source: salt://templates/nomad/{{ agent }}.hcl
     - user: nomad
     - group: nomad
     - mode: 640
-{% endif %}
 
 run nomad service:
   service.running:
@@ -74,8 +65,4 @@ run nomad service:
     - no_block: True
     - watch:
       - file: common nomad config
-      {% if grains['host'] in consul_servers %}
-      - file: server nomad config
-      {% elif grains['host'] not in consul_servers %}
-      - file: client nomad config
-      {% endif %}
+      - file: {{ agent }} nomad config

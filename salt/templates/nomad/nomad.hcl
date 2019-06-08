@@ -1,4 +1,4 @@
-datacenter = "lhr08"
+datacenter = "{{ pillar['datacenter'] }}"
 data_dir = "/opt/nomad"
 
 consul {
