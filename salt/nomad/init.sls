@@ -44,6 +44,7 @@ common nomad config:
     - user: nomad
     - group: nomad
     - mode: 640
+    - template: jinja
 
 
 {{ agent }} nomad config:
