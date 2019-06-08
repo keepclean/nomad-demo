@@ -16,6 +16,10 @@ gitfs_remotes:
   - https://github.com/keepclean/nomad-demo.git
 gitfs_root: salt/
 log_level: warning
+ext_pillar:
+  - git:
+    - master https://github.com/keepclean/nomad-demo.git:
+      - root: salt/pillar
 
 # The failhard option tells the minions to stop immediately after the first
 # failure detected in the state execution, defaults to False
