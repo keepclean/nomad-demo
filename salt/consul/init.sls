@@ -32,27 +32,18 @@ add consul service:
     - user: consul
     - group: consul
 
-{% set consul_servers = ('8dm1', '8dm2', '8dm3') %}
+{% set agent = "server" %}
+{% if 'dm' not in grains['host'] %}
+  {% set agent = "client" %}
+{% endif %}
 
-{% if grains['host'] in  consul_servers %}
-server consul config:
+consul config:
   file.managed:
-    - name: /etc/consul.d/server.json
-    - source: salt://templates/consul/server.json
+    - name: /etc/consul.d/{{ agent }}.json
+    - source: salt://templates/consul/{{ agent }}.json
     - user: consul
     - group: consul
     - mode: 640
-{% endif %}
-
-{% if grains['host'] not in consul_servers %}
-client consul config:
-  file.managed:
-    - name: /etc/consul.d/client.json
-    - source: salt://templates/consul/client.json
-    - user: consul
-    - group: consul
-    - mode: 640
-{% endif %}
 
 run consul service:
   service.running:
@@ -60,8 +51,4 @@ run consul service:
     - enable: True
     - no_block: True
     - watch:
-      {% if grains['host'] in consul_servers %}
-      - file: server consul config
-      {% elif grains['host'] not in consul_servers %}
-      - file: client consul config
-      {% endif %}
+      - file: consul config
