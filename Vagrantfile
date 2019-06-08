@@ -3,7 +3,7 @@
 
 $script = <<-SCRIPT
 mkdir -p /etc/salt/minion.d
-echo "master: [10.0.$1.2, 10.0.$1.3, 10.0.$1.4]" > /etc/salt/minion.d/master.conf"
+echo "master: [10.0.$1.2, 10.0.$1.3, 10.0.$1.4]" > /etc/salt/minion.d/master.conf
 SCRIPT
 
 Vagrant.configure("2") do |config|
@@ -12,9 +12,9 @@ Vagrant.configure("2") do |config|
   # setup DCs
   [8].each do |d|
 
-    dms = [1]
+    dms = (1..3)
 
-    [1].each do |i|
+    dms.each do |i|
       if not File.exists?("configs/keys/#{d}dm#{i}.pem")
         system( "openssl genpkey -algorithm RSA -out configs/keys/#{d}dm#{i}.pem -pkeyopt rsa_keygen_bits:2048" )
         system( "openssl rsa -pubout -in configs/keys/#{d}dm#{i}.pem -out configs/keys/#{d}dm#{i}.pub" )
@@ -51,7 +51,7 @@ Vagrant.configure("2") do |config|
           salt.master_key = "configs/keys/#{d}dm#{i}.pem"
           salt.master_pub = "configs/keys/#{d}dm#{i}.pub"
 
-          salt.minion_config = "configs/minion_#{d}"
+          salt.minion_config = "configs/minion"
           salt.minion_key = "configs/keys/#{d}dm#{i}.pem"
           salt.minion_pub = "configs/keys/#{d}dm#{i}.pub"
 

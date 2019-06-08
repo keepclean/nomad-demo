@@ -1,3 +1,4 @@
+region = "{{ pillar['region'] }}"
 datacenter = "{{ pillar['datacenter'] }}"
 data_dir = "/opt/nomad"
 
