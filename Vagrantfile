@@ -13,7 +13,7 @@ Vagrant.configure("2") do |config|
   [8].each do |d|
 
     ["dm", "m"].each do |t|
-      if $t == "dm"
+      if "#{t}" == "dm"
         if not File.exists?("configs/keys/#{d}dm-master.pem")
           system( "openssl genpkey -algorithm RSA -out configs/keys/#{d}dm-master.pem -pkeyopt rsa_keygen_bits:2048" )
           system( "openssl rsa -pubout -in configs/keys/#{d}dm-master.pem -out configs/keys/#{d}dm-master.pub" )
@@ -29,7 +29,7 @@ Vagrant.configure("2") do |config|
     ["dm", "m"].each_with_index do |t, i|
       config.vm.define "#{d}#{t}1" do |node|
         node.vm.hostname = "#{d}#{t}1"
-        node.vm.network "private_network", ip: "10.0.#{d}.#{i + 1}", :adapter => 2
+        node.vm.network "private_network", ip: "10.0.#{d}.#{i + 2}", :adapter => 2
 
         node.vm.provider "virtualbox" do |vb|
           vb.name = "#{d}#{t}1"
@@ -44,7 +44,7 @@ Vagrant.configure("2") do |config|
         end
 
         config.vm.provision :salt do |salt|
-          if $t == "dm"
+          if "#{t}" == "dm"
             salt.install_master = true
             salt.master_config = "configs/master"
             salt.master_key = "configs/keys/#{d}dm-master.pem"
