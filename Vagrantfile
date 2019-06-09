@@ -3,38 +3,36 @@
 
 $script = <<-SCRIPT
 mkdir -p /etc/salt/minion.d
-echo "master: [10.0.$1.2, 10.0.$1.3, 10.0.$1.4]" > /etc/salt/minion.d/master.conf
+echo "master:\n  - 10.0.$1.2" > /etc/salt/minion.d/master.conf
 SCRIPT
 
 Vagrant.configure("2") do |config|
   config.vm.box = "debian/stretch64"
 
   # setup DCs
-  [8, 18].each do |d|
+  [8].each do |d|
 
-    dms = (1..3)
-
-    dms.each do |i|
-      if not File.exists?("configs/keys/#{d}dm-master.pem")
-        system( "openssl genpkey -algorithm RSA -out configs/keys/#{d}dm-master.pem -pkeyopt rsa_keygen_bits:2048" )
-        system( "openssl rsa -pubout -in configs/keys/#{d}dm-master.pem -out configs/keys/#{d}dm-master.pub" )
+    ["dm", "m"].each do |t|
+      if $t == "dm"
+        if not File.exists?("configs/keys/#{d}dm-master.pem")
+          system( "openssl genpkey -algorithm RSA -out configs/keys/#{d}dm-master.pem -pkeyopt rsa_keygen_bits:2048" )
+          system( "openssl rsa -pubout -in configs/keys/#{d}dm-master.pem -out configs/keys/#{d}dm-master.pub" )
+        end
       end
 
-      if not File.exists?("configs/keys/#{d}dm#{i}-minion.pem")
-        system( "openssl genpkey -algorithm RSA -out configs/keys/#{d}dm#{i}-minion.pem -pkeyopt rsa_keygen_bits:2048" )
-        system( "openssl rsa -pubout -in configs/keys/#{d}dm#{i}-minion.pem -out configs/keys/#{d}dm#{i}-minion.pub" )
+      if not File.exists?("configs/keys/#{d}#{t}1-minion.pem")
+        system( "openssl genpkey -algorithm RSA -out configs/keys/#{d}#{t}1-minion.pem -pkeyopt rsa_keygen_bits:2048" )
+        system( "openssl rsa -pubout -in configs/keys/#{d}#{t}1-minion.pem -out configs/keys/#{d}#{t}1-minion.pub" )
       end
     end
 
-    # setup DMs
-    dms.each do |i|
-
-      config.vm.define "#{d}dm#{i}" do |node|
-        node.vm.hostname = "#{d}dm#{i}"
+    ["dm", "m"].each_with_index do |t, i|
+      config.vm.define "#{d}#{t}1" do |node|
+        node.vm.hostname = "#{d}#{t}1"
         node.vm.network "private_network", ip: "10.0.#{d}.#{i + 1}", :adapter => 2
 
         node.vm.provider "virtualbox" do |vb|
-          vb.name = "#{d}dm#{i}"
+          vb.name = "#{d}#{t}1"
           vb.memory = "512"
           vb.cpus = "1"
           vb.default_nic_type = "virtio"
@@ -46,25 +44,25 @@ Vagrant.configure("2") do |config|
         end
 
         config.vm.provision :salt do |salt|
-          salt.install_master = true
+          if $t == "dm"
+            salt.install_master = true
+            salt.master_config = "configs/master"
+            salt.master_key = "configs/keys/#{d}dm-master.pem"
+            salt.master_pub = "configs/keys/#{d}dm-master.pub"
+            salt.seed_master = {
+              "#{d}dm1": "configs/keys/#{d}dm1-minion.pub",
+              "#{d}m1": "configs/keys/#{d}m1-minion.pub",
+            }
+          end
+
+          salt.minion_id = "#{d}#{t}1"
+          salt.minion_config = "configs/minion"
+          salt.minion_key = "configs/keys/#{d}#{t}1-minion.pem"
+          salt.minion_pub = "configs/keys/#{d}#{t}1-minion.pub"
+
           salt.run_highstate = false
           salt.run_overstate = false
           salt.orchestrations = false
-
-          salt.master_config = "configs/master"
-          salt.master_key = "configs/keys/#{d}dm-master.pem"
-          salt.master_pub = "configs/keys/#{d}dm-master.pub"
-          salt.seed_master = {
-            "#{d}dm1": "configs/keys/#{d}dm1-minion.pub",
-            "#{d}dm2": "configs/keys/#{d}dm2-minion.pub",
-            "#{d}dm3": "configs/keys/#{d}dm3-minion.pub",
-          }
-
-          salt.minion_id = "#{d}dm#{i}"
-          salt.minion_config = "configs/minion"
-          salt.minion_key = "configs/keys/#{d}dm#{i}-minion.pem"
-          salt.minion_pub = "configs/keys/#{d}dm#{i}-minion.pub"
-
           salt.bootstrap_options = "-x python3"
           salt.python_version = "3"
         end
