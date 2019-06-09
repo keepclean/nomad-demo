@@ -5,5 +5,6 @@
   "datacenter": "{{ pillar['datacenter'] }}",
   "data_dir": "/opt/consul",
   "log_level": "WARN",
+  "retry_join": {{ pillar['consul_servers'] }},
   "server": false
 }
