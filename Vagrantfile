@@ -15,9 +15,14 @@ Vagrant.configure("2") do |config|
     dms = (1..3)
 
     dms.each do |i|
-      if not File.exists?("configs/keys/#{d}dm#{i}.pem")
-        system( "openssl genpkey -algorithm RSA -out configs/keys/#{d}dm#{i}.pem -pkeyopt rsa_keygen_bits:2048" )
-        system( "openssl rsa -pubout -in configs/keys/#{d}dm#{i}.pem -out configs/keys/#{d}dm#{i}.pub" )
+      if not File.exists?("configs/keys/#{d}dm-master.pem")
+        system( "openssl genpkey -algorithm RSA -out configs/keys/#{d}dm-master.pem -pkeyopt rsa_keygen_bits:2048" )
+        system( "openssl rsa -pubout -in configs/keys/#{d}dm-master.pem -out configs/keys/#{d}dm-master.pub" )
+      end
+
+      if not File.exists?("configs/keys/#{d}dm#{i}-minion.pem")
+        system( "openssl genpkey -algorithm RSA -out configs/keys/#{d}dm#{i}-minion.pem -pkeyopt rsa_keygen_bits:2048" )
+        system( "openssl rsa -pubout -in configs/keys/#{d}dm#{i}-minion.pem -out configs/keys/#{d}dm#{i}-minion.pub" )
       end
     end
 
@@ -45,21 +50,20 @@ Vagrant.configure("2") do |config|
           salt.run_highstate = false
           salt.run_overstate = false
           salt.orchestrations = false
-          salt.minion_id = "#{d}dm#{i}"
 
           salt.master_config = "configs/master"
-          salt.master_key = "configs/keys/#{d}dm#{i}.pem"
-          salt.master_pub = "configs/keys/#{d}dm#{i}.pub"
-
-          salt.minion_config = "configs/minion"
-          salt.minion_key = "configs/keys/#{d}dm#{i}.pem"
-          salt.minion_pub = "configs/keys/#{d}dm#{i}.pub"
-
+          salt.master_key = "configs/keys/#{d}dm-master.pem"
+          salt.master_pub = "configs/keys/#{d}dm-master.pub"
           salt.seed_master = {
-            "#{d}dm1": "configs/keys/#{d}dm1.pub",
-            "#{d}dm2": "configs/keys/#{d}dm2.pub",
-            "#{d}dm3": "configs/keys/#{d}dm3.pub",
+            "#{d}dm1": "configs/keys/#{d}dm1-minion.pub",
+            "#{d}dm2": "configs/keys/#{d}dm2-minion.pub",
+            "#{d}dm3": "configs/keys/#{d}dm3-minion.pub",
           }
+
+          salt.minion_id = "#{d}dm#{i}"
+          salt.minion_config = "configs/minion"
+          salt.minion_key = "configs/keys/#{d}dm#{i}-minion.pem"
+          salt.minion_pub = "configs/keys/#{d}dm#{i}-minion.pub"
 
           salt.bootstrap_options = "-x python3"
           salt.python_version = "3"

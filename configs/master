@@ -15,6 +15,7 @@ fileserver_backend:
 gitfs_remotes:
   - https://github.com/keepclean/nomad-demo.git
 gitfs_root: salt/
+gitfs_disable_saltenv_mapping: True
 log_level: warning
 ext_pillar:
   - git:

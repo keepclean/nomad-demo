@@ -1,6 +1,12 @@
+master_type: str
 random_master: True
+retry_dns: 0
+master_alive_interval: 30
+master_tries: 3
+
 state_verbose: False
 state_output: changes
-process_count_max: 4
 log_level: warning
+
+process_count_max: 4
 startup_states: highstate
