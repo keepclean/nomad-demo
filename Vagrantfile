@@ -10,7 +10,7 @@ Vagrant.configure("2") do |config|
   config.vm.box = "debian/stretch64"
 
   # setup DCs
-  [8].each do |d|
+  [8, 18].each do |d|
 
     dms = (1..3)
 
