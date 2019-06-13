@@ -1,5 +1,6 @@
 {
   {%- raw %}
+  "advertise_addr_wan": "{{ GetPrivateInterfaces | exclude \"network\" \"10.0.2.0/24\" | attr \"address\"}}",
   "bind_addr": "{{ GetPrivateInterfaces | exclude \"network\" \"10.0.2.0/24\" | attr \"address\"}}",
   {%- endraw %}
   "bootstrap_expect": 1,
@@ -7,6 +8,9 @@
   "data_dir": "/opt/consul",
   "log_level": "WARN",
   "retry_join": {{ pillar['consul_servers'] }},
+  {% if pillar['datacenter'] != 'pdx08' %}
+  "retry_join_wan": {{ pillar['consul_servers'] }},
+  {% endif %}
   "server": true,
   "ui": true
 }
