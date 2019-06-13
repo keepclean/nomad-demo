@@ -8,9 +8,9 @@
   "data_dir": "/opt/consul",
   "log_level": "WARN",
   "retry_join": {{ pillar['consul_servers'] }},
-  {% if pillar['datacenter'] != 'pdx08' %}
-  "retry_join_wan": {{ pillar['consul_servers'] }},
-  {% endif %}
+  {%- if pillar['datacenter'] != 'pdx08' %}
+  "retry_join_wan": ["10.0.18.2"],
+  {%- endif %}
   "server": true,
   "ui": true
 }
