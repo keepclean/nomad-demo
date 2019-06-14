@@ -1,4 +1,4 @@
-{%- set version = "0.9.1" %}
+{%- set version = "0.9.3" %}
 install nomad binary:
   archive.extracted:
     - name: /usr/local/bin/
