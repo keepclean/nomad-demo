@@ -4,10 +4,10 @@ datacenter: lhr08
 consul_servers: "[\"10.0.8.2\"]"
 {% elif grains['host'].startswith(('18dm', '18m'))%}
 region: wnam
-datacenter: pdx08
+datacenter: pdx18
 consul_servers: "[\"10.0.18.2\"]"
 {% elif grains['host'].startswith(('28dm', '28m'))%}
 region: weur
-datacenter: lux08
+datacenter: ams28
 consul_servers: "[\"10.0.28.2\"]"
 {% endif %}

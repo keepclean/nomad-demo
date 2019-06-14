@@ -11,6 +11,11 @@ Vagrant.configure("2") do |config|
 
   ["dm", "m"].each_with_index do |t, i|
     [8, 18].each do |d|
+
+      if d == 18 and "#{t}" == "m"
+          next
+      end
+
       if "#{t}" == "dm"
         if not File.exists?("configs/keys/#{d}dm-master.pem")
           system( "openssl genpkey -algorithm RSA -out configs/keys/#{d}dm-master.pem -pkeyopt rsa_keygen_bits:2048" )
