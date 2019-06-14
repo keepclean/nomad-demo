@@ -9,7 +9,7 @@ SCRIPT
 Vagrant.configure("2") do |config|
   config.vm.box = "debian/stretch64"
 
-  ["m", "dm"].each_with_index do |t, i|
+  ["dm", "m"].each_with_index do |t, i|
     [8, 18].each do |d|
       if "#{t}" == "dm"
         if not File.exists?("configs/keys/#{d}dm-master.pem")
