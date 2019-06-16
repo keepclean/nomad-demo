@@ -1,5 +1,6 @@
 job "example" {
     datacenters = ["lhr08"]
+    region = "weur"
     type = "system"
     task "example" {
         driver = "exec"
