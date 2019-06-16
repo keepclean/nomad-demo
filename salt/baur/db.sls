@@ -33,6 +33,7 @@ set privileges for baur db:
 set privileges for ro-baur db:
   postgres_privileges.present:
     - name: ro-baur
+    - object_name: 'ALL'
     - object_type: table
     - privileges:
       - SELECT
