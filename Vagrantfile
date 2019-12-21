@@ -7,7 +7,7 @@ echo "master:\n  - 10.0.$1.2" > /etc/salt/minion.d/master.conf
 SCRIPT
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "debian/stretch64"
+  config.vm.box = "debian/buster64"
 
   ["dm", "m"].each_with_index do |t, i|
     [8, 18].each do |d|
